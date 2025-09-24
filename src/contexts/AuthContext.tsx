@@ -55,15 +55,56 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const envEmail = (import.meta.env.VITE_USER_EMAIL as string) || '';
     const envPass = (import.meta.env.VITE_PASSWORD as string) || '';
 
-    // If env credentials are set, validate locally and don't call Supabase.
+    // If env credentials are set, validate and authenticate via Supabase
+    // so that we obtain a real session (required for Row Level Security).
     if (envEmail && envPass) {
       if (email === envEmail && password === envPass) {
-        // Create a minimal local session/user to mirror expected shape
-        const fakeUser = { id: 'local-admin', email } as unknown as User;
-        setUser(fakeUser);
-        setSession({} as Session); // leave minimal session object
-        setLoading(false);
-        return { error: null };
+        try {
+          const res = await supabase.auth.signInWithPassword({ email, password });
+          // Log full response for debugging (includes HTTP status when available)
+          console.debug('supabase.signInWithPassword response:', res);
+
+          const { data, error } = res;
+          if (error) {
+            // If invalid credentials and auto-create is enabled, attempt signUp (dev-only)
+            const autoCreate = (import.meta.env.VITE_AUTO_CREATE_LOCAL_USER as string) === 'true';
+            const isInvalidCredentials = (error as any).status === 400 || (error as any).message?.toLowerCase?.().includes('invalid');
+            if (autoCreate && isInvalidCredentials) {
+              console.info('Attempting to auto-create local user (VITE_AUTO_CREATE_LOCAL_USER=true)');
+              try {
+                const signup = await supabase.auth.signUp({ email, password });
+                console.debug('supabase.signUp response:', signup);
+              } catch (suErr) {
+                console.error('Error during auto signUp:', suErr);
+              }
+
+              // Try signing in again
+              const retry = await supabase.auth.signInWithPassword({ email, password });
+              console.debug('Retry signIn response:', retry);
+              if ((retry as any).error) {
+                console.error('Retry signIn failed:', (retry as any).error);
+                return { error: (retry as any).error };
+              }
+              setSession(((retry as any).data as any)?.session ?? null);
+              setUser(((retry as any).data as any)?.user ?? null);
+              setLoading(false);
+              return { error: null };
+            }
+
+            // Otherwise surface the original error
+            console.error('Supabase auth error:', error);
+            return { error };
+          }
+
+          setSession((data as any).session ?? null);
+          setUser((data as any).user ?? null);
+          setLoading(false);
+          return { error: null };
+        } catch (err) {
+          // Unexpected network/parse errors
+          console.error('Unexpected error during signInWithPassword:', err);
+          return { error: { message: 'Unexpected authentication error', details: err } };
+        }
       }
 
       // Credentials provided but do not match env — return error immediately.
