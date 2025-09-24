@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Anime-inspired ledger design system with soft pastels */
+
+@layer base {
+  :root {
+    /* Base colors inspired by anime classroom aesthetic */
+    --background: 315 15% 97%;
+    --foreground: 260 15% 25%;
+
+    /* Card with gentle pink tint */
+    --card: 315 25% 96%;
+    --card-foreground: 260 15% 25%;
+
+    --popover: 315 25% 96%;
+    --popover-foreground: 260 15% 25%;
+
+    /* Primary: Soft purple-blue */
+    --primary: 260 45% 55%;
+    --primary-foreground: 315 25% 96%;
+    --primary-glow: 260 60% 75%;
+
+    /* Secondary: Warm pink */
+    --secondary: 340 40% 85%;
+    --secondary-foreground: 260 25% 35%;
+
+    /* Muted with pink undertones */
+    --muted: 315 20% 88%;
+    --muted-foreground: 260 15% 50%;
+
+    /* Accent: Soft coral pink */
+    --accent: 345 55% 75%;
+    --accent-foreground: 260 25% 25%;
+
+    /* Success: Gentle mint */
+    --success: 160 40% 65%;
+    --success-foreground: 160 25% 15%;
+
+    /* Destructive: Soft rose */
+    --destructive: 355 65% 70%;
+    --destructive-foreground: 315 25% 96%;
+
+    /* Border and input with purple tint */
+    --border: 270 20% 85%;
+    --input: 270 20% 92%;
+    --ring: 260 45% 55%;
+
+    /* Gradients for anime effect */
+    --gradient-primary: linear-gradient(135deg, hsl(260 45% 55%), hsl(260 60% 75%));
+    --gradient-secondary: linear-gradient(135deg, hsl(340 40% 85%), hsl(345 55% 75%));
+    --gradient-background: linear-gradient(180deg, hsl(315 15% 97%), hsl(315 25% 94%));
+    --gradient-card: linear-gradient(145deg, hsl(315 25% 96%), hsl(315 20% 94%));
+    --gradient-hero: linear-gradient(135deg, hsl(260 45% 55%) 0%, hsl(345 55% 75%) 100%);
+
+    /* Shadows with color tints */
+    --shadow-soft: 0 4px 20px -4px hsl(260 45% 55% / 0.15);
+    --shadow-medium: 0 8px 30px -8px hsl(260 45% 55% / 0.2);
+    --shadow-strong: 0 16px 40px -12px hsl(260 45% 55% / 0.25);
+    --shadow-glow: 0 0 40px hsl(260 60% 75% / 0.3);
+
+    /* Animation timing */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark mode with anime night theme */
+    --background: 260 25% 8%;
+    --foreground: 315 25% 95%;
+
+    --card: 260 20% 12%;
+    --card-foreground: 315 25% 95%;
+
+    --popover: 260 20% 12%;
+    --popover-foreground: 315 25% 95%;
+
+    --primary: 260 60% 75%;
+    --primary-foreground: 260 25% 8%;
+    --primary-glow: 260 70% 85%;
+
+    --secondary: 340 30% 25%;
+    --secondary-foreground: 315 25% 95%;
+
+    --muted: 260 15% 20%;
+    --muted-foreground: 315 15% 65%;
+
+    --accent: 345 55% 65%;
+    --accent-foreground: 260 25% 8%;
+
+    --success: 160 40% 55%;
+    --success-foreground: 160 25% 95%;
+
+    --destructive: 355 65% 60%;
+    --destructive-foreground: 315 25% 95%;
+
+    --border: 260 15% 25%;
+    --input: 260 15% 20%;
+    --ring: 260 60% 75%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-gradient-to-b from-background to-background/95 text-foreground antialiased;
+    background-image: var(--gradient-background);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/40 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/60;
+  }
+}
+
+@layer components {
+  /* Glassmorphism effect */
+  .glass {
+    @apply backdrop-blur-md bg-white/10 border border-white/20;
+  }
+
+  /* Anime-style button effects */
+  .btn-anime {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+
+  .btn-anime::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] transition-transform duration-700;
+  }
+
+  .btn-anime:hover::before {
+    @apply translate-x-[100%];
+  }
+
+  /* Floating animation */
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Glow effect */
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    @apply shadow-medium -translate-y-1;
+    box-shadow: var(--shadow-medium);
+  }
+}
